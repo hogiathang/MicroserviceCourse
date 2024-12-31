@@ -12,16 +12,41 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(CustomerAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(CustomerAlreadyExistsException ex,
-                                                                                 WebRequest request) {
+//    @ExceptionHandler(CustomerAlreadyExistsException.class)
+//    public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExistsException(CustomerAlreadyExistsException ex,
+//                                                                                 WebRequest request) {
+//        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+//                request.getDescription(false),
+//                HttpStatus.BAD_REQUEST,
+//                ex.getMessage(),
+//                LocalDateTime.now().toString()
+//        );
+//
+//        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+//    }
+//
+//    @ExceptionHandler(ResourceNotFoundException.class)
+//    public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(ResourceNotFoundException ex,
+//                                                                                 WebRequest request) {
+//        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+//                request.getDescription(false),
+//                HttpStatus.NOT_FOUND,
+//                ex.getMessage(),
+//                LocalDateTime.now().toString()
+//        );
+//
+//        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleException(Exception ex,
+                                                            WebRequest request) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 request.getDescription(false),
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 ex.getMessage(),
                 LocalDateTime.now().toString()
         );
 
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

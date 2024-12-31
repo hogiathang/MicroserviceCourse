@@ -1,13 +1,16 @@
 package com.accounts.accounts.dto;
 
-import jakarta.persistence.Column;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@ToString
+@AllArgsConstructor @NoArgsConstructor
 public class CustomerDto {
     private String name;
 
     private String email;
 
     private String mobileNumber;
+
 }

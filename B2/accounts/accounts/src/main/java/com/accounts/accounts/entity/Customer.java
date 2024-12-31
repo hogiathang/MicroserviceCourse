@@ -3,8 +3,10 @@ package com.accounts.accounts.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Setter
+@Getter
 @Entity
-@Getter @Setter @ToString
+@ToString
 @AllArgsConstructor @NoArgsConstructor
 public class Customer extends BaseEntity{
     @Id
@@ -18,4 +20,5 @@ public class Customer extends BaseEntity{
 
     @Column(name = "mobile_number")
     private String mobileNumber;
+
 }

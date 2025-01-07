@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api", produces = "application/json")
+@RequestMapping(value = "/api", produces = "application/json")
 @AllArgsConstructor
 @Validated
 public class CardController {

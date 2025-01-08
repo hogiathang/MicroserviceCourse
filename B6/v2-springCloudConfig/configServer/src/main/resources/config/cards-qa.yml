@@ -1,0 +1,12 @@
+build:
+  version: 1.2.0
+cards:
+  message: "Welcome to QA my card service"
+
+  contactDetails:
+    name: "LEE JONGO SUK"
+    email: "daiwidiwjdhuwh.com"
+
+  onCallSupport:
+    - 0399222222
+    - 0399333333

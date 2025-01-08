@@ -1,0 +1,13 @@
+build:
+  version: 1.0
+
+cards:
+  message: "Welcome to my card service"
+
+  contactDetails:
+    name: "Thang Dev"
+    email: "ywhdaiudwhdhwu@gmail.com"
+
+  onCallSupport:
+    - 0399222222
+    - 0399333333

@@ -1,0 +1,10 @@
+build:
+  version: 1.1.0
+loans:
+  message: "Welcome to product Loans Service"
+  contactDetails:
+    name: "Jong Jing President"
+    email: "duadhahdwdhudwhu@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

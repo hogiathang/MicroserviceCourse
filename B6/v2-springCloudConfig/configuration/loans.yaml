@@ -1,0 +1,11 @@
+build:
+  version: 1.0
+
+loans:
+  message: "Welcome to Loans Service"
+  contactDetails:
+    name: "Thang Dev"
+    email: "duadhahdwuhduwauhhudhwuhahu@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

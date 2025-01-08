@@ -1,0 +1,11 @@
+build:
+  version: 1.0.0
+
+accounts:
+  message: "Welcome to product account service"
+  contactDetails:
+    name: "Master Jinwoo Product"
+    email: "LeeJinWoo@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

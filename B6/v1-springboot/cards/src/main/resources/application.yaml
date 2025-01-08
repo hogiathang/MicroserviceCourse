@@ -1,0 +1,36 @@
+server:
+  port: 9000
+spring:
+  datasource:
+    url: jdbc:h2:mem:localStorage
+    driverClassName: org.h2.Driver
+    username: thang
+    password: '123456'
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  config:
+    import:
+      - application_qa.yml
+      - application_prod.yml
+  profiles:
+    active: dev
+
+build:
+  version: 1.0
+
+cards:
+  message: "Welcome to my card service"
+
+  contactDetails:
+    name: "Thang Dev"
+    email: "ywhdaiudwhdhwu@gmail.com"
+
+  onCallSupport:
+    - 0399222222
+    - 0399333333

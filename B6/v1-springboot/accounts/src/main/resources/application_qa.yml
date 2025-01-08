@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: qa
+
+build:
+  version: 3.0.0
+
+accounts:
+  message: "Welcome to QA account service"
+  contactDetails:
+    name: "QA Lead Thang"
+    email: "dadwjidijaijd@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

@@ -2,7 +2,7 @@ package com.loans.loans.controller;
 
 import com.loans.loans.constants.LoansConstants;
 import com.loans.loans.dto.LoansDto;
-import com.loans.loans.dto.LoansInfoDto;
+import com.loans.loans.dto.LoansContactInfoDto;
 import com.loans.loans.dto.ResponseDto;
 import com.loans.loans.service.ILoansService;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class LoansController {
     private String version;
 
     @Autowired
-    private LoansInfoDto loansInfoDto;
+    private LoansContactInfoDto loansInfoDto;
 
     @Autowired
     private Environment environment;
@@ -97,7 +97,7 @@ public class LoansController {
     }
 
     @GetMapping("/contact-info")
-    public ResponseEntity<LoansInfoDto> getContactInfo() {
+    public ResponseEntity<LoansContactInfoDto> getContactInfo() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(loansInfoDto);

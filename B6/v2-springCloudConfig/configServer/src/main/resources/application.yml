@@ -14,7 +14,7 @@ spring:
           clone-on-start: true
           force-pull: true
           username: RavenTheshadow
-          password: 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
+          password: '{cipher}06ab888f38449ed0d758a07c314fcee720d8245665f2155ed118c9fe001ddc8acf8994de07100ba24af5323f3ee674eb179f9d83df4dc388cbe41c443e03b0187c7e9d6b2af805f8d32f63411ebf0399bb6a7c6cf8a8bc23a81e72b0a2bc38ac94fc9d2d9fa03ae00d89ca68abc3eea0'
   #        native:
 #          search-locations: "file:///C:/Users/MyClone/OneDrive/Desktop/MicroserviceCourse/B6/v2-springCloudConfig/configuration"
 #          search-locations: "classpath:/config"
@@ -28,7 +28,7 @@ server:
   port: 8071
 
 encrypt:
-  key: "4FEI0J9KJL45JBB134256"
+  key: "HWROODER-IIQAP-OWQKKCAL-ALEFWOR-OWQKQ"
 
 management:
   endpoints:

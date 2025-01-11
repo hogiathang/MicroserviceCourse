@@ -1,0 +1,73 @@
+services:
+  rabbit-message-queue:
+    image: rabbitmq:4.0-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    extends:
+      file: otp-docker-compose.yaml
+      service: network-deploy-service
+
+  config-server:
+    image: hogiathang/configserver:v3
+    container_name: config-server
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbit-message-queue:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:8071/actuator/health | grep UP || exit 1"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-base-config
+
+  accounts-service:
+    image: hogiathang/accounts:v3
+    container_name: account-ms
+    ports:
+      - "8080:8080"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-service-config
+  loans-service:
+    image: hogiathang/loans:v3
+    container_name: loans-ms
+    ports:
+      - "8090:8090"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-service-config
+
+  cards-service:
+    image: hogiathang/cards:v3
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-service-config
+
+networks:
+  ms:
+    driver: bridge

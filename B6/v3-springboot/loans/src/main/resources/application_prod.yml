@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+loans:
+  message: "Welcome to product Loans Service"
+  contactDetails:
+    name: "Jong Jing President"
+    email: "duadhahdwdhudwhu@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

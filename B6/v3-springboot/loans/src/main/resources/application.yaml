@@ -1,0 +1,35 @@
+server:
+  port: 8090
+spring:
+  datasource:
+    url: jdbc:h2:mem:localStorage
+    driver-class-name: org.h2.Driver
+    username: thang
+    password: '123456'
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  config:
+    import:
+      - application_qa.yml
+      - application_prod.yml
+  profiles:
+    active: prod
+
+
+build:
+  version: 1.0
+
+loans:
+  message: "Welcome to Loans Service"
+  contactDetails:
+    name: "Thang Dev"
+    email: "duadhahdwuhduwauhhudhwuhahu@gmail.com"
+  onCallSupport:
+    - 0399222222
+    - 0399333333

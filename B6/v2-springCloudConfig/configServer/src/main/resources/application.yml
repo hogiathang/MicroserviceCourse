@@ -36,6 +36,11 @@ management:
       exposure:
         include: "*"
   # /actuator/health
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     health:
       probes:

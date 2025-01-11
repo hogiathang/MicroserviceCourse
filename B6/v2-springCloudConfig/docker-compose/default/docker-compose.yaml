@@ -1,60 +1,80 @@
 services:
-  config-server:
-    image: hogiathang/configserver:s6
+  rabbit:
+    image: rabbitmq:4.0-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    extends:
+      file: common-config.yaml
+      service: network-deploy-service
+
+  configserver:
+    image: "hogiathang/configserver:s6"
     container_name: configserver-ms
     ports:
       - "8071:8071"
-    deploy:
-      resources:
-        limits:
-          memory: 500M
-    networks:
-      - ms
-  accounts-service:
-    image: hogiathang/accounts:s6
-    container_name: account-ms
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail http://localhost:8071/actuator/health/readiness || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    extends:
+      file: common-config.yaml
+      service: microservice-base-config
+
+  accounts:
+    image: "hogiathang/accounts:s6"
+    container_name: accounts-ms
     ports:
       - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          memory: 800M
-    networks:
-      - ms
+    depends_on:
+      configserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "accounts"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "default"
-  loans-service:
-    image: hogiathang/loans:s6
+    extends:
+      file: common-config.yaml
+      service: microservice-configserver-config
+
+  loans:
+    image: "hogiathang/loans:s6"
     container_name: loans-ms
     ports:
       - "8090:8090"
-    deploy:
-      resources:
-        limits:
-          memory: 800M
-    networks:
-      - ms
+    depends_on:
+      configserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "loans"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "default"
-  cards-service:
-    image: hogiathang/cards:s6
+    extends:
+      file: common-config.yaml
+      service: microservice-configserver-config
+
+  cards:
+    image: "hogiathang/cards:s6"
     container_name: cards-ms
     ports:
       - "9000:9000"
-    deploy:
-      resources:
-        limits:
-          memory: 800M
-    networks:
-      - ms
+    depends_on:
+      configserver:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "cards"
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILES_ACTIVE: "default"
+    extends:
+      file: common-config.yaml
+      service: microservice-configserver-config
+
 networks:
-  ms:
-    driver: bridge
+  hogiathang:
+    driver: "bridge"

@@ -9,9 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.config</groupId>
-	<artifactId>configServer</artifactId>
+	<artifactId>configserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>configServer</name>
+	<packaging>jar</packaging>
+	<name>configserver</name>
 	<description>This is the configuration for the microservice application</description>
 	<url/>
 	<licenses>
@@ -73,6 +74,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>
+							hogiathang/${project.artifactId}:s6
+						</name>
+					</image>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

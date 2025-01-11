@@ -121,7 +121,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>hogiathang/${project.artifactId}:v2</name>
+						<name>hogiathang/${project.artifactId}:s6</name>
 					</image>
 					<excludes>
 						<exclude>

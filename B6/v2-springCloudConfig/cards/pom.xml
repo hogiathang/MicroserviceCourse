@@ -110,7 +110,7 @@
 				<configuration>
 					<image>
 						<name>
-							hogiathang/${project.artifactId}:v2
+							hogiathang/${project.artifactId}:s6
 						</name>
 					</image>
 					<excludes>

@@ -6,26 +6,19 @@ spring:
   profiles:
     active: default
   datasource:
-    url: jdbc:h2:mem:localStorage
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-      enabled: true
+    url: jdbc:mysql://localhost:3311/loansdb
+    hikari:
+      username: root
+      password: root
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
     hibernate:
       ddl-auto: update
-    show-sql: true
   config:
     import: "optional:configserver:http://localhost:8071"
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    stream:
-      username: guest
-      password: guest
+  sql:
+    init:
+      mode: always
 management:
   endpoints:
     web:

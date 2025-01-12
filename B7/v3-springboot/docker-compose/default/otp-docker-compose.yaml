@@ -3,6 +3,18 @@ services:
     networks:
       - ms
 
+  microservice-database-config:
+    extends:
+      service: network-deploy-service
+    image: mysql:latest
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 20s
+      retries: 3
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
   microservice-base-config:
     extends:
       service: network-deploy-service
@@ -10,12 +22,13 @@ services:
       resources:
         limits:
           memory: 2G
-    environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
 
   microservice-service-config:
     extends:
       service: microservice-base-config
+    depends_on:
+      config-server:
+        condition: service_healthy
     environment:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8071
       - SPRING_PROFILES_ACTIVE=default

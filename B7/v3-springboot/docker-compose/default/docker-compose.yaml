@@ -1,28 +1,39 @@
 services:
-  rabbit-message-queue:
-    image: rabbitmq:4.0-management
-    container_name: rabbitmq
+  accountsdb:
+    container_name: accounts-db
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      - "3310:3306"
+    environment:
+      MYSQL_DATABASE: accountsdb
     extends:
       file: otp-docker-compose.yaml
-      service: network-deploy-service
+      service: microservice-database-config
+
+  loansdb:
+    container_name: loans-db
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_DATABASE: loansdb
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-database-config
+
+  cardsdb:
+    container_name: cards-db
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: cardsdb
+    extends:
+      file: otp-docker-compose.yaml
+      service: microservice-database-config
 
   config-server:
-    image: hogiathang/configserver:v3
+    image: hogiathang/configserver:v4
     container_name: config-server
     ports:
       - "8071:8071"
-    depends_on:
-      rabbit-message-queue:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent http://localhost:8071/actuator/health | grep UP || exit 1"]
       interval: 10s
@@ -34,36 +45,46 @@ services:
       service: microservice-base-config
 
   accounts-service:
-    image: hogiathang/accounts:v3
+    image: hogiathang/accounts:v4
     container_name: account-ms
     ports:
       - "8080:8080"
     depends_on:
-      config-server:
+      accountsdb:
         condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: accounts
+      SPRING_DATASOURCE_URL: jdbc:mysql://accountsdb:3306/accountsdb
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config
+
   loans-service:
-    image: hogiathang/loans:v3
+    image: hogiathang/loans:v4
     container_name: loans-ms
     ports:
       - "8090:8090"
     depends_on:
-      config-server:
+      loansdb:
         condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: loans
+      SPRING_DATASOURCE_URL: jdbc:mysql://loansdb:3306/loansdb
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config
 
   cards-service:
-    image: hogiathang/cards:v3
+    image: hogiathang/cards:v4
     container_name: cards-ms
     ports:
       - "9000:9000"
     depends_on:
-      config-server:
+      cardsdb:
         condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: cards
+      SPRING_DATASOURCE_URL: jdbc:mysql://cardsdb:3306/cardsdb
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config

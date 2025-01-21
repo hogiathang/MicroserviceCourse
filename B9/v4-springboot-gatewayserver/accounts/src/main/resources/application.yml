@@ -31,9 +31,17 @@ management:
         include: "*"
       discovery:
         enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoint:
     shutdown:
       access: unrestricted
+    health:
+      probes:
+        enabled: true
 
 eureka:
   instance:
@@ -48,4 +56,12 @@ info:
   app:
     name: accounts
     description: "Accounts Service"
-    version: 1.0.0
+    version: 5.2
+
+logging:
+  level:
+    com:
+      accounts:
+        accounts:
+          controller: DEBUG
+          service: DEBUG

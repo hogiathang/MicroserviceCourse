@@ -1,0 +1,41 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gatewayserver
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      discovery:
+        enabled: true
+  endpoint:
+    gateway:
+      access:
+        enabled: true
+
+info:
+  app:
+    name: gatewayserver
+    description: "Gateway Service"
+    version: 5.2
+
+logging:
+  level:
+    com:
+      hogiathang:
+        gatewayserver: DEBUG

@@ -24,10 +24,10 @@ public class CustomerServiceImpl implements ICustomerService {
      * @return CustomerDetailDto
      */
     @Override
-    public CustomerDetailDto fetchCustomerDetails(String mobileNumber) {
+    public CustomerDetailDto fetchCustomerDetails(String mobileNumber, String correlationId) {
         CustomerDto customerDto = accountService.fetchAccountDetails(mobileNumber);
-        CardsDto cardsDto = cardsFeignClient.fetchCard(mobileNumber).getBody();
-        LoansDto loansDto = loansFeignClient.fetchLoanDetails(mobileNumber).getBody();
+        CardsDto cardsDto = cardsFeignClient.fetchCard(correlationId, mobileNumber).getBody();
+        LoansDto loansDto = loansFeignClient.fetchLoanDetails(correlationId, mobileNumber).getBody();
 
         CustomerDetailDto customerDetailDto = CustomerMapper.mapToCustomerDetailDto(customerDto, new CustomerDetailDto());
         customerDetailDto.setLoansDto(loansDto);

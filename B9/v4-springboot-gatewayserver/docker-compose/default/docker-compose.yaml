@@ -1,9 +1,9 @@
 services:
   config-server:
-    image: hogiathang/configserver:v5
+    image: hogiathang/configserver:v5.2
     container_name: config-server
-    ports:
-      - "8071:8071"
+#    ports:
+#      - "8071:8071"
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent http://localhost:8071/actuator/health | grep UP || exit 1"]
       interval: 10s
@@ -14,15 +14,16 @@ services:
       service: microservice-base-config
 
   eureka-server:
-    image: hogiathang/eurekaserver:v5
+    image: hogiathang/eurekaserver:v5.2
     container_name: eureka-server
-    ports:
-      - "8070:8070"
+#    ports:
+#      - "8070:8070"
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent http://localhost:8070/actuator/health | grep UP || exit 1"]
-      interval: 20s
+      interval: 10s
+      timeout: 20s
       retries: 10
-      start_period: 30s
+      start_period: 20s
     depends_on:
       config-server:
         condition: service_healthy
@@ -34,37 +35,64 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8071
 
   accounts-service:
-    image: hogiathang/accounts:v5
+    image: hogiathang/accounts:v5.2
     container_name: account-ms
-    ports:
-      - "8080:8080"
+#    ports:
+#      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:8080/actuator/health | grep UP || exit 1"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 40s
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config
     environment:
-      - INFO_APP_VERSION=5.0.0
+      - INFO_APP_VERSION=5.2.0
 
   loans-service:
-    image: hogiathang/loans:v5
+    image: hogiathang/loans:v5.2
     container_name: loans-ms
-    ports:
-      - "8090:8090"
+#    ports:
+#      - "8090:8090"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:8090/actuator/health | grep UP || exit 1"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 40s
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config
     environment:
-      - INFO_APP_VERSION=5.0.0
+      - INFO_APP_VERSION=5.2.0
 
   cards-service:
-    image: hogiathang/cards:v5
+    image: hogiathang/cards:v5.2
     container_name: cards-ms
-    ports:
-      - "9000:9000"
+#    ports:
+#      - "9000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:9000/actuator/health | grep UP || exit 1"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 40s
     extends:
       file: otp-docker-compose.yaml
       service: microservice-service-config
     environment:
-      - INFO_APP_VERSION=5.0.0
+      - INFO_APP_VERSION=5.2.0
+
+  gateway-server:
+    image: hogiathang/gatewayserver:v5.2
+    container_name: gateway-server
+    ports:
+      - "8072:8072"
+    extends:
+      file: otp-docker-compose.yaml
+      service: microgateway-config
 
 networks:
   ms:

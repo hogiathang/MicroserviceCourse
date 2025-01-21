@@ -23,3 +23,14 @@ services:
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8071
       - SPRING_PROFILES_ACTIVE=default
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8070/eureka/
+
+  microgateway-config:
+    extends:
+      service: microservice-service-config
+    depends_on:
+      accounts-service:
+        condition: service_healthy
+      loans-service:
+        condition: service_healthy
+      cards-service:
+        condition: service_healthy

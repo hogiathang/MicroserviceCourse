@@ -9,6 +9,12 @@
         <option value="$PROJECT_DIR$/v3.2-springboot/configserver/pom.xml" />
         <option value="$PROJECT_DIR$/v3.2-springboot/loans/pom.xml" />
         <option value="$PROJECT_DIR$/v3.2-springboot/eurekaServer/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/cards/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/configserver/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/eurekaServer/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/gatewayserver/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/loans/pom.xml" />
+        <option value="$PROJECT_DIR$/v4-springboot-gatewayserver/accounts/pom.xml" />
       </list>
     </option>
   </component>

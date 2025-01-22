@@ -1,0 +1,42 @@
+services:
+  network-deploy-service:
+    networks:
+      - ms
+
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+  microservice-service-config:
+    extends:
+      service: microservice-base-config
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8071
+      - SPRING_PROFILES_ACTIVE=qa
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8070/eureka/
+
+  microgateway-config:
+    extends:
+      service: microservice-service-config
+    depends_on:
+      accounts-service:
+        condition: service_healthy
+      loans-service:
+        condition: service_healthy
+      cards-service:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - SPRING_DATA_REDIS_HOST= redis
+      - SPRING_DATA_REDIS_CONNECT_TIMEOUT=PT2S
+      - SPRING_DATA_REDIS_PORT= 6379

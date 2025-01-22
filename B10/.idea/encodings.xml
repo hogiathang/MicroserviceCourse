@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/v3.2-springboot/accounts/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v3.2-springboot/cards/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v3.2-springboot/configserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v3.2-springboot/eurekaServer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v3.2-springboot/loans/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/accounts/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/cards/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/configserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/eurekaServer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/gatewayserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/v4-springboot-gatewayserver/loans/src/main/java" charset="UTF-8" />
+  </component>
+</project>

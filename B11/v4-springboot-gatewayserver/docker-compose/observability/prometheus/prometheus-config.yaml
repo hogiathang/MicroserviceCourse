@@ -1,0 +1,37 @@
+# A scrape configuration containing exactly one endpoint to scrape from node_exporter running on a host:
+global:
+  scrape_interval:     5s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 5s # By default, scrape targets every 15 seconds.
+scrape_configs:
+#  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+#  - job_name: 'node'
+#
+#    # metrics_path defaults to '/metrics'
+#    # scheme defaults to 'http'.
+#
+#    static_configs:
+#      - targets: ['localhost:9100']
+  - job_name: 'accounts-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['account-ms:8080']
+  - job_name: 'loans-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['loans-ms:8090']
+  - job_name: 'cards-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['cards-ms:9000']
+  - job_name: 'gateway-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['gateway-server:8072']
+  - job_name: 'config-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['config-server:8071']
+  - job_name: 'eureka-server'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['eureka-server:8070']

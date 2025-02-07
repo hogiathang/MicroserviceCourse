@@ -1,17 +1,38 @@
 services:
+  rabbitmq:
+    image: rabbitmq:4.0-management
+    hostname: rabbitmq
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics ping" ]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: otp-docker-compose.yaml
+      service: network-deploy-service
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.0
     container_name: keycloak
     ports:
       - "8075:8080"
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-    command:
-      - "start-dev"
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command: "start-dev"
     extends:
-      service: network-deploy-service
       file: otp-docker-compose.yaml
+      service: network-deploy-service
+  redis:
+    image: redis
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping" ]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+    extends:
+      file: otp-docker-compose.yaml
+      service: network-deploy-service
   read:
     image: grafana/loki:latest
     command: "-config.file=/etc/loki/config.yaml -target=read"
@@ -230,30 +251,6 @@ services:
       service: network-deploy-service
       file: otp-docker-compose.yaml
 
-  redis:
-    image: redis
-    healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping" ]
-      interval: 10s
-      timeout: 20s
-      retries: 10
-    extends:
-      file: otp-docker-compose.yaml
-      service: network-deploy-service
-
-  rabbitmq:
-    image: rabbitmq:4.0-management
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmq-diagnostics ping"]
-      interval: 10s
-      timeout: 20s
-      retries: 10
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-    extends:
-      file: otp-docker-compose.yaml
-      service: network-deploy-service
   config-server:
     image: hogiathang/configserver:v7
     container_name: config-server
@@ -327,8 +324,6 @@ services:
   cards-service:
     image: hogiathang/cards:v7
     container_name: cards-ms
-    #    ports:
-    #      - "9000:9000"
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent http://localhost:9000/actuator/health | grep UP || exit 1"]
       interval: 60s
@@ -341,18 +336,6 @@ services:
     environment:
       - INFO_APP_VerSION=7.0
       - OTEL_SERVICE_NAME=cards-ms
-
-  gateway-server:
-    image: hogiathang/gatewayserver:v7
-    container_name: gateway-server
-    ports:
-      - "8072:8072"
-    extends:
-      file: otp-docker-compose.yaml
-      service: microgateway-config
-    environment:
-      - OTEL_SERVICE_NAME=gatewayserver
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI= http://keycloak:8080/realms/master/protocol/openid-connect/certs
 
   message:
     image: hogiathang/message:v7
@@ -370,8 +353,30 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      - SPRING_RABBITMQ_HOST=rabbitmq
-      - OTEL_SERVICE_NAME=message-ms
+      SPRING_RABBITMQ_HOST: rabbitmq
+      OTEL_SERVICE_NAME: message-ms
+
+  gateway-server:
+    image: hogiathang/gatewayserver:v7
+    container_name: gateway-server
+    ports:
+      - "8072:8072"
+    depends_on:
+      accounts-service:
+        condition: service_healthy
+      loans-service:
+        condition: service_healthy
+      cards-service:
+        condition: service_healthy
+    extends:
+      file: otp-docker-compose.yaml
+      service: microgateway-config
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      OTEL_SERVICE_NAME: "gatewayserver"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
+      SPRING_DATA_REDIS_HOST: redis
+
 
 networks:
   ms:

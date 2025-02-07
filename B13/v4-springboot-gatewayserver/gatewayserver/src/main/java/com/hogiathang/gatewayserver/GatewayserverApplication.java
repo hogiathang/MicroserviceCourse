@@ -4,6 +4,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
@@ -27,52 +28,48 @@ public class GatewayserverApplication {
 	}
 
 	@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder routeLocatorBuilder) {
+	public RouteLocator RouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()
 				.route(p -> p
-							.path("/hogiathang/accounts/**")
-							.filters(f -> f.rewritePath("/hogiathang/accounts/?(?<remaining>.*)", "/${remaining}")
-									.addRequestHeader("X-Response-Header", LocalDateTime.now().toString())
-									.retry(retryConfig -> retryConfig.setRetries(3)
-											.setMethods(HttpMethod.GET)
-											.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true))
-									.circuitBreaker(config -> config.setName("accountsCircuitBreaker")
-											.setFallbackUri("forward:/contactSupport")))
-							.uri("lb://ACCOUNTS"))
+						.path("/hogiathang/accounts/**")
+						.filters( f -> f.rewritePath("/hogiathang/accounts/(?<segment>.*)","/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.circuitBreaker(config -> config.setName("accountsCircuitBreaker")
+										.setFallbackUri("forward:/contactSupport")))
+						.uri("lb://ACCOUNTS"))
 				.route(p -> p
 						.path("/hogiathang/loans/**")
-						.filters(f -> f.rewritePath("/hogiathang/loans/?(?<remaining>.*)", "/${remaining}")
-								.addRequestHeader("X-Response-Header", LocalDateTime.now().toString())
+						.filters( f -> f.rewritePath("/hogiathang/loans/(?<segment>.*)","/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 								.retry(retryConfig -> retryConfig.setRetries(3)
 										.setMethods(HttpMethod.GET)
-										.setBackoff(Duration.ofMillis(100), Duration.ofMillis(1000), 2, true)))
+										.setBackoff(Duration.ofMillis(100),Duration.ofMillis(1000),2,true)))
 						.uri("lb://LOANS"))
 				.route(p -> p
 						.path("/hogiathang/cards/**")
-						.filters(f -> f.rewritePath("/hogiathang/cards/?(?<remaining>.*)", "/${remaining}")
-								.addRequestHeader("X-Response-Header", LocalDateTime.now().toString()
-										).requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter()).setKeyResolver(userKeyResolver())))
-						.uri("lb://CARDS"))
-				.build();
+						.filters( f -> f.rewritePath("/hogiathang/cards/(?<segment>.*)","/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
+								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
+										.setKeyResolver(userKeyResolver())))
+						.uri("lb://CARDS")).build();
 	}
 
 	@Bean
-	public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer() {
+	public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
 		return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
-				.timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(60)).build())
 				.circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
-				.build());
+				.timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(10))
+						.build()).build());
 	}
 
 	@Bean
 	public RedisRateLimiter redisRateLimiter() {
-		return new RedisRateLimiter(1, 60, 20);
+		return new RedisRateLimiter(1, 1, 1);
 	}
 
 	@Bean
 	KeyResolver userKeyResolver() {
-		return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("X-User-Agent"))
-				.defaultIfEmpty("unknown");
-
+		return exchange -> Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst("user"))
+				.defaultIfEmpty("anonymous");
 	}
 }

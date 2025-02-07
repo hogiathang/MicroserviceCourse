@@ -1,64 +1,61 @@
 spring:
   application:
-    name: gatewayserver
+    name: "gatewayserver"
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: "optional:configserver:http://localhost:8071/"
   cloud:
     gateway:
       discovery:
         locator:
           enabled: false
-          lower-case-service-id: true
+          lowerCaseServiceId: true
       httpclient:
-        connect-timeout: 10000
+        connect-timeout: 1000
         response-timeout: 10s
   data:
     redis:
       connect-timeout: 2s
       host: localhost
       port: 6379
-      timeout: 2s
+      timeout: 1s
   security:
     oauth2:
-      resource server:
+      resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8075/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: "http://localhost:8075/realms/master/protocol/openid-connect/certs"
 management:
-  info:
-    env:
-      enabled: true
   endpoints:
     web:
       exposure:
         include: "*"
-      discovery:
-        enabled: true
   endpoint:
     gateway:
-      access:
-        enabled: true
+      access: unrestricted
+  info:
+    env:
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
 
 info:
   app:
-    name: gatewayserver
-    description: "Gateway Service"
-    version: 5.2
+    name: "gatewayserver"
+    description: "DBK Gateway Server Application"
+    version: "1.0.0"
 
 logging:
   level:
     com:
-      hogiathang:
+      eazybytes:
         gatewayserver: DEBUG
   pattern:
     level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        sliding-window-size: 10
-        permitted-number-of-calls-in-half-open-state: 2
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 10000
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 2
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10000

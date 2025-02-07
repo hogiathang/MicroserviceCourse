@@ -23,10 +23,9 @@ public class SecurityConfig {
                         .pathMatchers("/hogiathang/accounts/**").hasRole("ACCOUNTS")
                         .pathMatchers("/hogiathang/loans/**").hasRole("LOANS")
                         .pathMatchers("/hogiathang/cards/**").hasRole("CARDS"))
-                .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(
-                        jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())
-                ));
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable);
+                .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec
+                        .jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
+        http.csrf(csrfSpec -> csrfSpec.disable());
         return http.build();
     }
 

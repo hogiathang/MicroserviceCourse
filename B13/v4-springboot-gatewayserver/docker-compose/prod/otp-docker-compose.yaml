@@ -40,3 +40,6 @@ services:
         condition: service_healthy
       cards-service:
         condition: service_healthy
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_SECURITY_OAUTH2_RESOURCE_SERVER_JWT_JWK_SET_URI=http://keycloak:8075/realms/master/protocol/openid-connect/certs
